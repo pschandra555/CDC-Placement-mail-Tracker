@@ -60,3 +60,14 @@ def test_student_flow():
 def test_only_vit_accounts():
     with TestClient(app) as c:
         assert c.get("/me", headers={"X-Dev-Email": "someone@gmail.com"}).status_code == 403
+
+
+def test_new_student_before_profile():
+    run()
+    with TestClient(app) as c:
+        me = c.get("/me").json()
+        assert me["name"] == "Aarav Sharma" and not me["profileComplete"]
+        ops = c.get("/opportunities").json()
+        nimbus = by_prefix(ops, "nimbus-labs-software")
+        assert nimbus["eligibility"] == {"state": "check", "reasons": ["Save your profile to check eligibility"]}
+        assert by_prefix(ops, "codechef")["eligibility"]["state"] == "open"

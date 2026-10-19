@@ -16,7 +16,7 @@ const COLUMNS: { title: string; statuses: AppStatus[]; color: string }[] = [
 ];
 
 export default function Applications() {
-  const { ready, opportunities } = useStore();
+  const { ready, opportunities, mode } = useStore();
   const tracked = opportunities.filter((o) => o.application && !["not-applied", "not-registered"].includes(o.application.status));
 
   return (
@@ -24,7 +24,10 @@ export default function Applications() {
       <h1 className="mb-2 font-display text-3xl font-bold tracking-tight sm:text-4xl">
         Application <span className="text-gradient">tracker</span>
       </h1>
-      <p className="mb-8 text-white/50">Update a status from any opportunity page. Shortlist mails will move cards here automatically once the backend is live.</p>
+      <p className="mb-8 text-white/50">
+        Update a status from any opportunity page.{" "}
+        {mode === "api" ? "When a shortlist mail lists your registration number, the card moves here on its own." : "In the live version, shortlist mails move cards here on their own."}
+      </p>
 
       {ready && tracked.length === 0 && (
         <div className="glass mb-8 flex items-center gap-4 p-5 text-sm text-white/60">

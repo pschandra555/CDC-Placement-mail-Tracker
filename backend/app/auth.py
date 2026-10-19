@@ -4,6 +4,8 @@ With no Supabase settings (local dev), the X-Dev-Email header picks the user."""
 
 from functools import lru_cache
 
+import re
+
 import jwt
 from fastapi import Depends, Header, HTTPException
 from sqlalchemy import select
@@ -51,7 +53,9 @@ def current_student(
 
     student = db.scalar(select(Student).where(Student.vit_email == email))
     if student is None:
-        student = Student(vit_email=email, name=name or email.split("@")[0].replace(".", " ").title())
+        # firstname.lastname2022@vitstudent.ac.in → "Firstname Lastname"
+        guess = re.sub(r"\d+", "", email.split("@")[0]).replace(".", " ").replace("_", " ").strip().title()
+        student = Student(vit_email=email, name=name or guess)
         db.add(student)
         db.commit()
     return student

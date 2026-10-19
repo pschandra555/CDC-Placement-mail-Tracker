@@ -13,7 +13,10 @@ router = APIRouter(prefix="/opportunities", tags=["opportunities"])
 
 def _out(o: Opportunity, s: Student, res: EligibilityResult | None, app: Application | None, reported: bool) -> OpportunityOut:
     # Stored result is the source of truth; compute on the fly if matching hasn't run for this student yet.
-    el = {"state": res.state, "reasons": res.reasons} if res else eligibility.check(o.rule, s).__dict__
+    if not s.profile_complete and o.rule is not None:
+        el = {"state": "check", "reasons": ["Save your profile to check eligibility"]}
+    else:
+        el = {"state": res.state, "reasons": res.reasons} if res else eligibility.check(o.rule, s).__dict__
     return OpportunityOut.model_validate(
         {
             **{k: getattr(o, k) for k in ("id", "category", "title", "organization", "registration_link", "deadline", "event_date",
