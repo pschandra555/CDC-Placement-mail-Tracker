@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import clsx from "clsx";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download } from "lucide-react";
+import { downloadIcs } from "@/lib/ics";
 import { CATEGORY_META } from "@/lib/mockData";
 import { useStore } from "@/lib/store";
 
@@ -50,6 +51,9 @@ export default function CalendarPage() {
           <p className="mt-1 text-white/50">Deadlines and event dates in one place. Export any one from its page.</p>
         </div>
         <div className="flex items-center gap-2">
+          <button onClick={() => downloadIcs(opportunities)} className="btn-ghost mr-2 !py-2 text-sm" title="Download all deadlines as a calendar file">
+            <Download className="h-4 w-4" /> <span className="hidden sm:inline">Export .ics</span>
+          </button>
           <button onClick={() => setOffset((o) => o - 1)} className="btn-ghost !p-2" aria-label="Previous month">
             <ChevronLeft className="h-4 w-4" />
           </button>

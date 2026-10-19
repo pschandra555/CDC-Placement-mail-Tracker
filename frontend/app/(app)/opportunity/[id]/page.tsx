@@ -4,11 +4,12 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import clsx from "clsx";
 import { motion } from "framer-motion";
-import { ArrowLeft, BellRing, CalendarPlus, Check, ExternalLink, Flag, Gauge, Mail, Quote } from "lucide-react";
+import { ArrowLeft, CalendarPlus, Check, ExternalLink, Flag, Gauge, Mail, Quote } from "lucide-react";
 import { CategoryChip, EligibilityBadge } from "@/components/opportunity/Badges";
+import { RemindersPanel } from "@/components/opportunity/RemindersPanel";
 import { OrgTile } from "@/components/ui/Logo";
 import { EVENT_FLOW, JOB_FLOW, countdown, fmtDate, gcalLink, isEventCategory } from "@/lib/format";
-import { isApplied, useStore } from "@/lib/store";
+import { useStore } from "@/lib/store";
 
 export default function OpportunityPage() {
   const { id } = useParams<{ id: string }>();
@@ -29,11 +30,6 @@ export default function OpportunityPage() {
   const cd = countdown(o.deadline, now);
   const flow = isEventCategory(o.category) ? EVENT_FLOW : JOB_FLOW;
   const current = o.application?.status ?? flow[0].id;
-  const applied = isApplied(o);
-  const reminders = (o.deadline ? [24, 2] : [])
-    .map((h) => ({ h, at: +new Date(o.deadline) - h * 3600_000 }))
-    .filter((r) => r.at > now);
-
   return (
     <div>
       <Link href="/dashboard" className="mb-6 inline-flex items-center gap-2 text-sm text-white/50 transition hover:text-white">
@@ -169,26 +165,7 @@ export default function OpportunityPage() {
             />
           </section>
 
-          <section className="glass p-6">
-            <h2 className="mb-4 flex items-center gap-2 font-display text-lg font-semibold">
-              <BellRing className="h-4 w-4 text-cyan-300" /> Reminders
-            </h2>
-            {applied ? (
-              <p className="text-sm text-white/55">Deadline reminders cancelled — you&apos;ve marked this as done.</p>
-            ) : reminders.length ? (
-              <ul className="space-y-2 text-sm">
-                {reminders.map((r) => (
-                  <li key={r.h} className="flex items-center justify-between rounded-xl border border-white/5 bg-white/[0.03] px-3 py-2">
-                    <span>{r.h}h before deadline</span>
-                    <span className="text-white/45">{fmtDate(new Date(r.at).toISOString())}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-white/55">{o.deadline ? "Closing soon — no automatic reminders left." : "The mail gives no deadline."}</p>
-            )}
-            <p className="mt-3 text-xs text-white/35">Telegram and email delivery arrive in Phase 2.</p>
-          </section>
+          <RemindersPanel o={o} />
         </aside>
       </div>
     </div>

@@ -6,7 +6,7 @@ from ..auth import current_student
 from ..db import get_db
 from ..matching import match_student
 from ..pipeline.run import apply_past_shortlists
-from ..models import Application, EligibilityResult, Reminder, Report, Student, utcnow
+from ..models import Application, EligibilityResult, Notification, Reminder, Report, Student, utcnow
 from ..schemas import StudentIn, StudentOut
 
 router = APIRouter(prefix="/me", tags=["profile"])
@@ -35,8 +35,8 @@ def update_me(body: StudentIn, s: Student = Depends(current_student), db: Sessio
 
 @router.delete("", status_code=204)
 def delete_me(s: Student = Depends(current_student), db: Session = Depends(get_db)):
-    """One button deletes the profile, statuses, reminders and reports."""
-    for model in (Reminder, Application, EligibilityResult, Report):
+    """One button deletes the profile, statuses, reminders, notifications and reports."""
+    for model in (Reminder, Notification, Application, EligibilityResult, Report):
         db.execute(delete(model).where(model.student_id == s.id))
     db.execute(delete(Student).where(Student.id == s.id))
     db.commit()

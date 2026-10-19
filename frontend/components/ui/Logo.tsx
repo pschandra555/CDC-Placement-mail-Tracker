@@ -1,18 +1,24 @@
+"use client";
+
+import { useId } from "react";
 import Link from "next/link";
 
 export function BrandMark({ size = 32 }: { size?: number }) {
+  // Unique gradient id per copy: the logo appears twice (sidebar + mobile header) and a
+  // hidden copy's <defs> can't be referenced, which left the mobile icon blank.
+  const id = `bm-${useId().replace(/:/g, "")}`;
   return (
     <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden>
       <defs>
-        <linearGradient id="bm" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id={id} x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#a78bfa" />
           <stop offset=".55" stopColor="#22d3ee" />
           <stop offset="1" stopColor="#f472b6" />
         </linearGradient>
       </defs>
-      <rect x="1" y="1" width="30" height="30" rx="9" fill="url(#bm)" opacity=".18" />
-      <rect x="1" y="1" width="30" height="30" rx="9" fill="none" stroke="url(#bm)" strokeWidth="1.5" />
-      <path d="M8 11.5 16 17l8-5.5M8 11h16v10H8z" fill="none" stroke="url(#bm)" strokeWidth="1.8" strokeLinejoin="round" />
+      <rect x="1" y="1" width="30" height="30" rx="9" fill={`url(#${id})`} opacity=".18" />
+      <rect x="1" y="1" width="30" height="30" rx="9" fill="none" stroke={`url(#${id})`} strokeWidth="1.5" />
+      <path d="M8 11.5 16 17l8-5.5M8 11h16v10H8z" fill="none" stroke={`url(#${id})`} strokeWidth="1.8" strokeLinejoin="round" />
       <circle cx="24" cy="10" r="3" fill="#22d3ee" />
     </svg>
   );

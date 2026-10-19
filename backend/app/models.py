@@ -1,9 +1,10 @@
 """Tables from the project spec. Datetimes are stored as naive UTC."""
 
+import secrets
 import uuid
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 
-from sqlalchemy import JSON, Boolean, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import JSON, Boolean, Date, DateTime, Float, ForeignKey, Integer, String, Text, false, text, true
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .db import Base
@@ -37,6 +38,20 @@ class Student(Base):
     profile_complete: Mapped[bool] = mapped_column(Boolean, default=False)
     cgpa_updated_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+
+    # Phase 2: notifications. server_default lets old databases gain these columns.
+    notify_telegram: Mapped[bool] = mapped_column(Boolean, default=True, server_default=true())
+    notify_email: Mapped[bool] = mapped_column(Boolean, default=True, server_default=true())
+    digest_enabled: Mapped[bool] = mapped_column(Boolean, default=False, server_default=false())
+    digest_time: Mapped[str] = mapped_column(String(5), default="08:00", server_default=text("'08:00'"))  # HH:MM, IST
+    last_digest_on: Mapped[date | None] = mapped_column(Date, nullable=True)
+    telegram_link_code: Mapped[str | None] = mapped_column(String(32), nullable=True, index=True)
+    telegram_link_expires: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    calendar_token: Mapped[str | None] = mapped_column(String(48), nullable=True, index=True)
+
+
+def new_calendar_token() -> str:
+    return secrets.token_urlsafe(24)
 
 
 class Mail(Base):
@@ -138,3 +153,19 @@ class Report(Base):
     student_id: Mapped[str] = mapped_column(ForeignKey("students.id", ondelete="CASCADE"), primary_key=True)
     opportunity_id: Mapped[str] = mapped_column(ForeignKey("opportunities.id", ondelete="CASCADE"), primary_key=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+
+
+class Notification(Base):
+    """Everything sent to a student, also shown in the in-app bell."""
+
+    __tablename__ = "notifications"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=new_id)
+    student_id: Mapped[str] = mapped_column(ForeignKey("students.id", ondelete="CASCADE"), index=True)
+    opportunity_id: Mapped[str | None] = mapped_column(ForeignKey("opportunities.id", ondelete="SET NULL"), nullable=True)
+    kind: Mapped[str] = mapped_column(String(20))  # new / deadline-24h / deadline-2h / custom / digest / shortlist
+    title: Mapped[str] = mapped_column(String(255))
+    body: Mapped[str] = mapped_column(Text, default="")
+    channels: Mapped[list] = mapped_column(JSON, default=list)  # where it was delivered besides the app
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, index=True)
+    read: Mapped[bool] = mapped_column(Boolean, default=False)

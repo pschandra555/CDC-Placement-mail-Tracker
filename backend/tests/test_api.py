@@ -71,3 +71,14 @@ def test_new_student_before_profile():
         nimbus = by_prefix(ops, "nimbus-labs-software")
         assert nimbus["eligibility"] == {"state": "check", "reasons": ["Save your profile to check eligibility"]}
         assert by_prefix(ops, "codechef")["eligibility"]["state"] == "open"
+
+
+def test_first_visit_parallel_requests_do_not_crash():
+    """A new student's first page load fires several requests at once."""
+    from concurrent.futures import ThreadPoolExecutor
+
+    with TestClient(app) as c:
+        email = {"X-Dev-Email": "new.student2025@vitstudent.ac.in"}
+        with ThreadPoolExecutor(8) as pool:
+            codes = list(pool.map(lambda path: c.get(path, headers=email).status_code, ["/me", "/opportunities", "/notifications", "/me/alerts"] * 4))
+    assert set(codes) == {200}
