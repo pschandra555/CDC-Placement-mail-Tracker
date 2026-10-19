@@ -48,12 +48,14 @@ def match_opportunity(db: Session, o: Opportunity, *, notify_new: bool = True) -
         schedule_reminders(db, s, o, res.state, notify_new=notify_new)
 
 
-def match_student(db: Session, s: Student) -> None:
+def match_student(db: Session, s: Student, *, notify_new: bool = False) -> None:
+    """Recompute eligibility for every drive. notify_new=True on a student's first profile save,
+    so they hear about drives that were already open before they joined."""
     now = utcnow()
     for o in db.scalars(select(Opportunity)):
         res = _store_result(db, s, o)
         if o.deadline is None or o.deadline > now:
-            schedule_reminders(db, s, o, res.state, notify_new=False)
+            schedule_reminders(db, s, o, res.state, notify_new=notify_new)
 
 
 def cancel_reminders(db: Session, student_id: str, opportunity_id: str) -> None:

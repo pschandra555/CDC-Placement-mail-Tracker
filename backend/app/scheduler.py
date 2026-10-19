@@ -21,6 +21,13 @@ def main() -> None:
     s = get_settings()
     last_fetch = 0.0
     log.info("Scheduler started: inbox every %s min, notifications every minute. Ctrl+C to stop.", FETCH_MINUTES)
+    try:
+        _loop(s, last_fetch)
+    except KeyboardInterrupt:
+        log.info("Scheduler stopped.")
+
+
+def _loop(s, last_fetch: float) -> None:
     while True:
         try:
             if time.time() - last_fetch >= FETCH_MINUTES * 60:

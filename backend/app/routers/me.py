@@ -20,13 +20,16 @@ def get_me(s: Student = Depends(current_student)):
 @router.put("", response_model=StudentOut, response_model_by_alias=True)
 def update_me(body: StudentIn, s: Student = Depends(current_student), db: Session = Depends(get_db)):
     s = db.merge(s)
+    first_save = not s.profile_complete
     if body.cgpa != s.cgpa:
         s.cgpa_updated_at = utcnow()
     for k, v in body.model_dump().items():
         setattr(s, k, v.upper() if k == "reg_no" else v)
     s.profile_complete = True
     db.flush()
-    match_student(db, s)  # eligibility and reminders follow the new profile
+    # Eligibility and reminders follow the new profile; the first save also sends one
+    # "N drives you can apply for" alert covering what is already open.
+    match_student(db, s, notify_new=first_save)
     db.flush()
     apply_past_shortlists(db, s)
     db.commit()

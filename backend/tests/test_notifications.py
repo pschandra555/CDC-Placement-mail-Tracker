@@ -78,7 +78,8 @@ def test_deadline_reminders_and_cancel_on_apply(client, sent):
     with SessionLocal() as db:
         q = opp(db, "quantix")
         qid, deadline = q.id, q.deadline
-        assert {r.kind for r in db.scalars(select(Reminder).where(Reminder.opportunity_id == qid))} == {"deadline-24h", "deadline-2h"}
+        # first profile save: welcome "new" alert plus both deadline reminders
+        assert {r.kind for r in db.scalars(select(Reminder).where(Reminder.opportunity_id == qid))} == {"new", "deadline-24h", "deadline-2h"}
         rep = send_due(db, BOT, now=deadline - timedelta(hours=23))
         assert any(n.kind == "deadline-24h" and n.opportunity_id == qid for n in db.scalars(select(Notification)))
         assert rep.sent >= 1
@@ -197,3 +198,18 @@ def test_calendar_feed(client):
     assert client.get("/calendar/not-a-real-token-at-all-xx.ics").status_code == 404
     new = client.post("/me/calendar/rotate").json()["calendarUrl"]
     assert new != url and client.get(path).status_code == 404
+
+
+def test_first_profile_save_sends_one_welcome_alert(client, sent):
+    """A student who joins after drives arrived still hears what's open, once."""
+    run()  # drives arrive before anyone has a profile
+    client.put("/me", json=PROFILE)
+    with SessionLocal() as db:
+        send_due(db, BOT)
+        new = [n for n in db.scalars(select(Notification)) if n.kind == "new"]
+    assert len(new) == 1 and "drives you can apply for" in new[0].title
+
+    client.put("/me", json={**PROFILE, "cgpa": 8.2})  # editing later sends nothing new
+    with SessionLocal() as db:
+        send_due(db, BOT)
+        assert len([n for n in db.scalars(select(Notification)) if n.kind == "new"]) == 1

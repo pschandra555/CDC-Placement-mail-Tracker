@@ -13,4 +13,7 @@ if __name__ == "__main__":
     if not s.telegram_enabled:
         sys.exit("Set TELEGRAM_BOT_TOKEN and TELEGRAM_BOT_USERNAME in backend/.env first (create a bot with @BotFather).")
     init_db()
-    poll_forever(s)
+    try:
+        poll_forever(s)
+    except KeyboardInterrupt:
+        print("\nTelegram bot stopped.")
