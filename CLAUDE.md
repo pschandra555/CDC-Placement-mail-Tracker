@@ -8,7 +8,9 @@ The owner is a student (Mac, Python 3.14, Node). Explain steps simply, give copy
 - **Phase 0 (done):** Next.js frontend: 3D landing page (react-three-fiber), dashboard, drive pages, tracker, calendar, profile. Dark neon/glass style.
 - **Phase 1 (done):** FastAPI backend: inbox pipeline (Gmail API or bundled sample mails) → clean personal data → extract (Gemini → Groq → rule-based) → validate → store → eligibility matching. Supabase sign-in limited to `@vitstudent.ac.in`.
 - **Phase 2 (done, PR #1):** alerts (new drives, 24h/2h deadline reminders, shortlists, drive updates, custom reminders) sent by Telegram first, email as backup, always the in-app bell. Daily digest, .ics calendar export and feed, installable PWA. Verified working on the owner's Mac.
-- **Next options:** connect a Telegram bot; deploy (frontend on Vercel, backend on Render, Supabase Postgres); Phase 3 (company pages, interview experiences, team finder, "Ask the CDC assistant" chat, resume–JD match); Phase 4 (college reports, corrections queue, evaluation on 150–200 labelled mails).
+- **Phase 2 leftovers:** connect a real Telegram bot (code done, needs the owner's @BotFather token); configure email (SMTP); browser push notifications (optional, not built).
+- **Then:** Next.js 15 upgrade; deploy (frontend on Vercel, backend on Render, Supabase Postgres); connect the real CDC inbox and Gemini; Phase 3 (company pages, interview experiences, team finder, "Ask the CDC assistant" chat, resume–JD match, prep checklists); Phase 4 (college reports, corrections queue, evaluation on 150–200 labelled mails).
+- **Full remaining plan, spec details, evaluation targets and open questions: `docs/ROADMAP.md`.** Read it before starting new work.
 - **Known:** `npm audit` warnings come from Next.js 14. Upgrading to Next 15 also means React 19, R3F v9 and drei v10; do it before deploying.
 
 ## Run locally (no keys needed)
