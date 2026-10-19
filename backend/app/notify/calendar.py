@@ -11,7 +11,7 @@ from ..models import Application, EligibilityResult, Opportunity, Student, utcno
 
 
 def _esc(text: str) -> str:
-    return text.replace("\\", "\\\\").replace(";", "\;").replace(",", "\\,").replace("\n", "\\n")
+    return text.replace("\\", "\\\\").replace(";", "\\;").replace(",", "\\,").replace("\n", "\\n")
 
 
 def _fold(line: str) -> str:
