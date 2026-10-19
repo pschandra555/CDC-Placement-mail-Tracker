@@ -7,23 +7,25 @@ import { Check, Save, Trash2, Wand2 } from "lucide-react";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { BrandMark } from "@/components/ui/Logo";
 import { ALL_BRANCHES, checkEligibility, parseRegNo } from "@/lib/eligibility";
-import { CATEGORY_META, getOpportunities } from "@/lib/mockData";
+import { CATEGORY_META } from "@/lib/mockData";
 import { useStore } from "@/lib/store";
 import type { Category, Student } from "@/lib/types";
 
 export default function Profile() {
-  const { ready, student, setStudent, resetAll } = useStore();
+  const { ready, student, setStudent, resetAll, opportunities, mode } = useStore();
   const [draft, setDraft] = useState<Student>(student);
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   useEffect(() => setDraft(student), [student]);
 
   // Live preview of how many drives the draft profile qualifies for.
   const preview = useMemo(() => {
     if (!ready) return { eligible: 0, total: 0 };
-    const opps = getOpportunities().filter((o) => o.rule && !o.rule.unclear);
+    const opps = opportunities.filter((o) => o.rule && !o.rule.unclear && o.category !== "update");
     return { eligible: opps.filter((o) => checkEligibility(o, draft).state === "eligible").length, total: opps.length };
-  }, [draft, ready]);
+  }, [draft, ready, opportunities]);
 
   if (!ready) return <div className="glass h-[600px] animate-pulse" />;
 
@@ -32,11 +34,24 @@ export default function Profile() {
   const reg = parseRegNo(draft.regNo);
   const cgpaBad = draft.cgpa < 0 || draft.cgpa > 10;
 
-  const save = () => {
-    if (cgpaBad) return;
-    setStudent(draft);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 1800);
+  const save = async () => {
+    if (cgpaBad || saving) return;
+    // Fill branch / batch from the reg. number when they're still empty.
+    const filled = { ...draft, batch: draft.batch || reg.batch || 0, branch: draft.branch || reg.branch || "" };
+    const missing = [!filled.name.trim() && "your name", !filled.branch && "your branch", filled.batch < 2000 && "your graduating batch"].filter(Boolean);
+    if (missing.length) return setSaveError(`Please add ${missing.join(", ")}.`);
+    setDraft(filled);
+    setSaving(true);
+    setSaveError(null);
+    try {
+      await setStudent(filled);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 1800);
+    } catch (e) {
+      setSaveError(e instanceof Error ? e.message : "Could not save");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const toggleCat = (c: Category) =>
@@ -88,13 +103,14 @@ export default function Profile() {
               </Field>
               <Field label="Branch">
                 <select className="input [&>option]:bg-ink-900" value={draft.branch} onChange={(e) => set("branch", e.target.value)}>
+                  {!draft.branch && <option value="">Select branch</option>}
                   {ALL_BRANCHES.map((b) => (
                     <option key={b}>{b}</option>
                   ))}
                 </select>
               </Field>
               <Field label="Graduating batch">
-                <input type="number" className="input" value={draft.batch} onChange={num("batch")} />
+                <input type="number" className="input" placeholder="e.g. 2026" value={draft.batch || ""} onChange={num("batch")} />
               </Field>
             </div>
           </section>
@@ -143,9 +159,10 @@ export default function Profile() {
           </section>
 
           <div className="flex flex-wrap items-center gap-3">
-            <button onClick={save} disabled={cgpaBad} className="btn-primary disabled:opacity-50">
-              <Save className="h-4 w-4" /> Save profile
+            <button onClick={save} disabled={cgpaBad || saving} className="btn-primary disabled:opacity-50">
+              <Save className="h-4 w-4" /> {saving ? "Saving…" : "Save profile"}
             </button>
+            {saveError && <span className="text-sm text-rose-300">{saveError}</span>}
             <AnimatePresence>
               {saved && (
                 <motion.span initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} className="text-sm text-emerald-300">
@@ -155,7 +172,7 @@ export default function Profile() {
             </AnimatePresence>
             <button
               onClick={() => {
-                if (confirm("Delete your profile, statuses and reminders from this device?")) resetAll();
+                if (confirm(mode === "api" ? "Delete your profile, statuses and reminders? This cannot be undone." : "Delete your profile, statuses and reminders from this device?")) resetAll().catch((e) => setSaveError(e.message));
               }}
               className="ml-auto flex items-center gap-2 rounded-xl px-4 py-2 text-sm text-rose-300/80 transition hover:bg-rose-500/10"
             >

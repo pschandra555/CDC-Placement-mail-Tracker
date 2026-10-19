@@ -3,7 +3,8 @@
 import { useMemo, useState } from "react";
 import clsx from "clsx";
 import { AnimatePresence, motion } from "framer-motion";
-import { Flame, Inbox, Search, Sparkles, Target, TimerReset } from "lucide-react";
+import Link from "next/link";
+import { Flame, Inbox, Search, Sparkles, Target, TimerReset, UserRound } from "lucide-react";
 import { OpportunityCard } from "@/components/opportunity/OpportunityCard";
 import { CATEGORY_META } from "@/lib/mockData";
 import { isApplied, useStore } from "@/lib/store";
@@ -27,15 +28,15 @@ const EL_FILTERS: { id: EligibilityState | "any"; label: string }[] = [
 ];
 
 export default function Dashboard() {
-  const { ready, opportunities, now, student } = useStore();
+  const { ready, opportunities, now, student, mode, profileComplete } = useStore();
   const [view, setView] = useState<View>("all");
   const [cats, setCats] = useState<Category[]>([]);
   const [el, setEl] = useState<EligibilityState | "any">("any");
   const [q, setQ] = useState("");
 
-  const open = useMemo(() => opportunities.filter((o) => +new Date(o.deadline) > now), [opportunities, now]);
+  const open = useMemo(() => opportunities.filter((o) => !o.deadline || +new Date(o.deadline) > now), [opportunities, now]);
   const canApply = (s: EligibilityState) => s === "eligible" || s === "open";
-  const closingSoon = (d: string) => +new Date(d) - now < 48 * 3600_000;
+  const closingSoon = (d: string) => !!d && +new Date(d) - now < 48 * 3600_000;
 
   const list = useMemo(() => {
     const term = q.trim().toLowerCase();
@@ -64,12 +65,20 @@ export default function Dashboard() {
     <div>
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
         <div className="chip mb-3 border-cyan-400/30 bg-cyan-400/10 text-cyan-200">
-          <Sparkles className="h-3.5 w-3.5" /> Synced with CDC inbox · sample data
+          <Sparkles className="h-3.5 w-3.5" /> {mode === "api" ? "Live · synced with the CDC inbox" : "Demo · sample data"}
         </div>
         <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
           Hey {ready ? student.name.split(" ")[0] : "there"}, <span className="text-gradient">here&apos;s what&apos;s open</span>
         </h1>
       </motion.div>
+
+      {ready && !profileComplete && (
+        <Link href="/profile" className="glass glow-border mb-6 flex items-center gap-3 border-amber-400/30 p-4 text-sm text-amber-100">
+          <UserRound className="h-5 w-5 shrink-0 text-amber-300" />
+          Save your CGPA, branch and batch once to see which drives you&apos;re eligible for.
+          <span className="ml-auto shrink-0 font-medium text-amber-300">Complete profile →</span>
+        </Link>
+      )}
 
       <div className="mb-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
         {stats.map((s, i) => (

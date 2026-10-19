@@ -1,0 +1,80 @@
+[
+  {
+    "id": "sample-nimbus",
+    "hours_ago": 6,
+    "subject": "Nimbus Labs — Campus Recruitment 2026 Batch | SDE-1",
+    "body": "Dear Students,\n\nNimbus Labs is visiting campus for the SDE-1 role.\n\nRole: Software Development Engineer\nCTC: ₹24 LPA\nLocation: Bengaluru\nBond: None\nJoining date: July 2026\n\nEligibility: B.Tech CSE & allied branches (2026 batch), CGPA ≥ 8.0, no standing arrears.\n\nRegister by {{h+20}} at https://example.com/register/nimbus\nLate registrations will not be entertained.\n\nRegards,\nCDC, VIT"
+  },
+  {
+    "id": "sample-quantix",
+    "hours_ago": 14,
+    "subject": "Quantix Analytics — 6 Month Internship (Jan 2026)",
+    "body": "Dear Students,\n\nQuantix Analytics is hiring interns.\n\nRole: Data Science Intern\nStipend: ₹60,000 per month\nDuration: 6 months\nType: Semester (Jan–Jun)\nPPO: Yes, performance-based\n\nEligibility: Open to 2026 batch CSE, IT, ECE, EEE students with CGPA 7.5 and above.\n\nLast date to register: {{h+40}}\nLink: https://example.com/register/quantix\n\nRegards,\nCDC"
+  },
+  {
+    "id": "sample-orbitra",
+    "hours_ago": 30,
+    "subject": "Orbitra Aerospace — Internship + Full-time (PPO) Drive",
+    "body": "Orbitra Aerospace — Internship leading to full-time employment.\n\nRole: Associate Product Engineer\nStipend: ₹50,000 per month\nDuration: 6 months\nCTC: ₹18 LPA on conversion\nLocation: Hyderabad\nBond: 1 year\n\nEligibility: All B.Tech branches, 2026 batch. CGPA 7.0+, 75% in 10th & 12th, no current arrears.\n\nDeadline: {{h+70}}\nRegister: https://example.com/register/orbitra"
+  },
+  {
+    "id": "sample-hackverse",
+    "hours_ago": 20,
+    "subject": "HackVerse 2026 — Hackathon registrations open",
+    "body": "HackVerse 2026 is here!\n\nOrganizer: VIT ACM Chapter × Kodex\nTheme: Build for Bharat\nTeam size: 2–4\nPrizes: ₹3,00,000 pool\nMode: Offline, Anna Auditorium\nEvent date: {{day+9@9}}\n\nOpen to all students of all years and branches.\n\nRegister before {{h+52}} at https://example.com/register/hackverse"
+  },
+  {
+    "id": "sample-ledgerly-ppt",
+    "hours_ago": 3,
+    "subject": "Ledgerly Fintech — Pre-Placement Talk (Mandatory)",
+    "body": "Pre-Placement Talk by Ledgerly Fintech.\n\nTopic: Careers at Ledgerly\nVenue: SJT 8th floor auditorium\nAttendance: Mandatory\nEvent date: {{day+2@17}}\n\nEligibility: Mandatory for all 2026 batch students registered for the Ledgerly drive.\n\nConfirm attendance by {{h+10}}: https://example.com/register/ledgerly-ppt"
+  },
+  {
+    "id": "sample-ledgerly",
+    "hours_ago": 26,
+    "subject": "Ledgerly Fintech — Campus Drive 2026 | Backend Engineer",
+    "body": "Dear Students,\n\nRole: Backend Engineer\nCTC: ₹16 LPA\nLocation: Pune\nBond: None\nJoining date: June 2026\n\nEligibility: CSE, IT and ECE (2026), CGPA 7.0 and above, no history of arrears.\n\nRegister by {{h+16}}: https://example.com/register/ledgerly\n\nCDC, VIT"
+  },
+  {
+    "id": "sample-ledgerly-ext",
+    "hours_ago": 2,
+    "subject": "Ledgerly Fintech — Deadline extended",
+    "body": "Dear Students,\n\nThe registration deadline for the Ledgerly Fintech Backend Engineer drive has been extended.\n\nNew deadline: {{h+28}}\n\nRegister: https://example.com/register/ledgerly\n\nCDC, VIT"
+  },
+  {
+    "id": "sample-voltgrid",
+    "hours_ago": 40,
+    "subject": "VoltGrid Energy — Graduate Engineer Trainee Hiring",
+    "body": "VoltGrid Energy GET hiring.\n\nRole: Graduate Engineer Trainee\nCTC: ₹9.5 LPA\nLocation: Pan-India\nBond: 2 years\n\nEligibility: B.Tech EEE / Mechanical / ECE, 2026 passouts, CGPA 6.5+.\n\nRegister by {{h+96}}: https://example.com/register/voltgrid"
+  },
+  {
+    "id": "sample-cobalt",
+    "hours_ago": 22,
+    "subject": "Cobalt Cloud — Summer Internship 2026",
+    "body": "Role: SWE Intern\nStipend: ₹1,10,000 per month\nDuration: 10 weeks\nType: Summer 2026\n\nEligibility: Pre-final year (2027 batch) CSE & allied branches, CGPA 8.5 and above.\n\nRegister by {{h+120}}: https://example.com/register/cobalt"
+  },
+  {
+    "id": "sample-helix",
+    "hours_ago": 18,
+    "subject": "Helix Health AI — ML Engineer (Full-time)",
+    "body": "Helix Health AI is hiring ML Engineers.\n\nRole: ML Engineer\nCTC: ₹21 LPA\nLocation: Chennai (hybrid)\n\nStudents with a good academic record and strong ML fundamentals are encouraged to apply.\n\nRegister by {{h+60}}: https://example.com/register/helix"
+  },
+  {
+    "id": "sample-nimbus-shortlist",
+    "hours_ago": 1,
+    "subject": "Nimbus Labs — Shortlist for Online Assessment",
+    "body": "Dear Students,\n\nThe following students are shortlisted for the Nimbus Labs online assessment:\n\n22BCE1234 Aarav Sharma\n22BCE0456 Diya Nair\n22BIT0789 Kabir Rao\n\nRound: Online assessment\nNext step: OA at 10:00 AM\nEvent date: {{day+2@10}}\nReport by {{h+32}}. Details: https://example.com/shortlist/nimbus"
+  },
+  {
+    "id": "sample-codesprint",
+    "hours_ago": 12,
+    "subject": "CodeSprint — Monthly Coding Contest (October)",
+    "body": "Organizer: CodeChef VIT\nTheme: Competitive programming\nTeam size: Individual\nPrizes: Goodies + referrals\nMode: Online\nEvent date: {{day+3@21}}\n\nOpen to all students.\n\nRegister by {{h+44}}: https://example.com/register/codesprint"
+  },
+  {
+    "id": "sample-promo",
+    "hours_ago": 5,
+    "subject": "Reminder: Update your VTOP password",
+    "body": "Please update your VTOP password before the end of the semester. This is an automated message."
+  }
+]

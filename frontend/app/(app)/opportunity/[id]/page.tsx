@@ -30,7 +30,7 @@ export default function OpportunityPage() {
   const flow = isEventCategory(o.category) ? EVENT_FLOW : JOB_FLOW;
   const current = o.application?.status ?? flow[0].id;
   const applied = isApplied(o);
-  const reminders = [24, 2]
+  const reminders = (o.deadline ? [24, 2] : [])
     .map((h) => ({ h, at: +new Date(o.deadline) - h * 3600_000 }))
     .filter((r) => r.at > now);
 
@@ -61,9 +61,16 @@ export default function OpportunityPage() {
           <a href={o.registrationLink} target="_blank" rel="noreferrer" className="btn-primary">
             Register now <ExternalLink className="h-4 w-4" />
           </a>
-          <a href={gcalLink(`${o.organization} — ${o.title} (deadline)`, o.deadline, o.summary.join(" "), o.registrationLink)} target="_blank" rel="noreferrer" className="btn-ghost">
-            <CalendarPlus className="h-4 w-4" /> Add to Google Calendar
-          </a>
+          {(o.deadline || o.eventDate) && (
+            <a
+              href={gcalLink(`${o.organization} — ${o.title} (${o.deadline ? "deadline" : "event"})`, o.deadline || o.eventDate!, o.summary.join(" "), o.registrationLink)}
+              target="_blank"
+              rel="noreferrer"
+              className="btn-ghost"
+            >
+              <CalendarPlus className="h-4 w-4" /> Add to Google Calendar
+            </a>
+          )}
         </div>
       </motion.div>
 
@@ -178,7 +185,7 @@ export default function OpportunityPage() {
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-white/55">Closing soon — no automatic reminders left.</p>
+              <p className="text-sm text-white/55">{o.deadline ? "Closing soon — no automatic reminders left." : "The mail gives no deadline."}</p>
             )}
             <p className="mt-3 text-xs text-white/35">Telegram and email delivery arrive in Phase 2.</p>
           </section>

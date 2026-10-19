@@ -26,7 +26,7 @@ export default function CalendarPage() {
     const add = (e: Ev) => map.set(key(e.date), [...(map.get(key(e.date)) ?? []), e]);
     opportunities.forEach((o) => {
       const color = CATEGORY_META[o.category].color;
-      add({ id: o.id, label: `${o.organization} closes`, kind: "deadline", color, date: new Date(o.deadline) });
+      if (o.deadline) add({ id: o.id, label: `${o.organization} closes`, kind: "deadline", color, date: new Date(o.deadline) });
       if (o.eventDate) add({ id: o.id, label: o.title, kind: "event", color, date: new Date(o.eventDate) });
     });
     return map;

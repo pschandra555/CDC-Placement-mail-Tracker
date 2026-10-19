@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { HeroCanvas } from "@/components/three/HeroCanvas";
+import { signInWithVitGoogle, supabase } from "@/lib/supabase";
 
 const word = {
   hidden: { opacity: 0, y: 40, rotateX: -60, filter: "blur(10px)" },
@@ -40,7 +41,15 @@ export function Hero() {
             Every CDC opportunity — jobs, internships, hackathons, workshops — read by AI, checked against <em className="not-italic text-white/90">your</em> CGPA and branch, with a reminder before it closes.
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1, duration: 0.6 }} className="mt-9 flex flex-wrap gap-3">
-            <Link href="/dashboard" className="btn-primary group">
+            <Link
+              href="/dashboard"
+              onClick={(e) => {
+                if (!supabase) return; // demo / dev mode: straight to the dashboard
+                e.preventDefault();
+                signInWithVitGoogle();
+              }}
+              className="btn-primary group"
+            >
               <GoogleG /> Sign in with VIT Google
               <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
             </Link>

@@ -1,6 +1,7 @@
 import type { AppStatus, Category } from "./types";
 
 export function countdown(iso: string, now: number) {
+  if (!iso) return { text: "No deadline", urgent: false, closed: false };
   const ms = +new Date(iso) - now;
   if (ms <= 0) return { text: "Closed", urgent: false, closed: true };
   const h = Math.floor(ms / 3600_000);
@@ -11,7 +12,7 @@ export function countdown(iso: string, now: number) {
 }
 
 export const fmtDate = (iso: string) =>
-  new Date(iso).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" });
+  !iso ? "not stated" : new Date(iso).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" });
 
 export const fmtDay = (iso: string) => new Date(iso).toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" });
 
