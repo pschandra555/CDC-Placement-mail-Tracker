@@ -72,6 +72,24 @@
     "body": "Organizer: CodeChef VIT\nTheme: Competitive programming\nTeam size: Individual\nPrizes: Goodies + referrals\nMode: Online\nEvent date: {{day+3@21}}\n\nOpen to all students.\n\nRegister by {{h+44}}: https://example.com/register/codesprint"
   },
   {
+    "id": "sample-lumen-summer",
+    "hours_ago": 4,
+    "subject": "Lumen Robotics — Summer Research Internship 2026 (2nd & 3rd years)",
+    "body": "Dear Students,\n\nLumen Robotics invites applications for its summer research internship.\n\nRole: Robotics Software Intern\nStipend: ₹40,000 per month\nDuration: 8 weeks\nType: Summer 2026\nPPO: No\n\nEligibility: Open to 2027 and 2028 batch CSE & allied branches, CGPA 8.0 and above.\n\nRegister by {{h+90}}: https://example.com/register/lumen\n\nRegards,\nCDC, VIT"
+  },
+  {
+    "id": "sample-campus-ideathon",
+    "hours_ago": 7,
+    "subject": "SparkLab Ideathon 2026 — Campus edition",
+    "body": "SparkLab Ideathon is back!\n\nOrganizer: VIT E-Cell × SparkLab\nTheme: Campus problems, real fixes\nTeam size: 2–3\nPrizes: ₹75,000 + incubation interviews\nMode: Online round, offline finale\nEvent date: {{day+10@10}}\n\nEligibility: Open to 2nd and 3rd year students (2027 and 2028 batches) of all branches.\n\nRegister before {{h+100}} at https://example.com/register/sparklab"
+  },
+  {
+    "id": "sample-git-workshop",
+    "hours_ago": 9,
+    "subject": "CDC VIT — Workshop: Git & Open Source for Beginners",
+    "body": "Dear Students,\n\nTopic: Git, GitHub and your first open-source contribution\nVenue: TT Gallery 2\nAttendance: Optional\nEvent date: {{day+2@16}}\n\nOpen to all students.\n\nRegister by {{h+30}}: https://example.com/register/git-workshop"
+  },
+  {
     "id": "sample-promo",
     "hours_ago": 5,
     "subject": "Reminder: Update your VTOP password",
