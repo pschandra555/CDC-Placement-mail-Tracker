@@ -9,6 +9,7 @@ import re
 import jwt
 from fastapi import Depends, Header, HTTPException
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from .config import Settings, get_settings
@@ -57,5 +58,10 @@ def current_student(
         guess = re.sub(r"\d+", "", email.split("@")[0]).replace(".", " ").replace("_", " ").strip().title()
         student = Student(vit_email=email, name=name or guess)
         db.add(student)
-        db.commit()
+        try:
+            db.commit()
+        except IntegrityError:
+            # A new user's first page load sends several requests at once; another one created the row first.
+            db.rollback()
+            student = db.scalar(select(Student).where(Student.vit_email == email))
     return student

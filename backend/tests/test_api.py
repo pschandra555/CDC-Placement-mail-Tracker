@@ -17,8 +17,8 @@ def by_prefix(ops, prefix):
 
 def test_pipeline_is_idempotent_and_merges_updates():
     first = run()
-    assert len(first.created) == 11 and first.updated and first.ignored == 1 and not first.errors
-    assert run().skipped_duplicates == 13
+    assert len(first.created) == 14 and first.updated and first.ignored == 1 and not first.errors
+    assert run().skipped_duplicates == 16
 
 
 def test_student_flow():
@@ -71,3 +71,25 @@ def test_new_student_before_profile():
         nimbus = by_prefix(ops, "nimbus-labs-software")
         assert nimbus["eligibility"] == {"state": "check", "reasons": ["Save your profile to check eligibility"]}
         assert by_prefix(ops, "codechef")["eligibility"]["state"] == "open"
+
+
+def test_first_visit_parallel_requests_do_not_crash():
+    """A new student's first page load fires several requests at once."""
+    from concurrent.futures import ThreadPoolExecutor
+
+    with TestClient(app) as c:
+        email = {"X-Dev-Email": "new.student2025@vitstudent.ac.in"}
+        with ThreadPoolExecutor(8) as pool:
+            codes = list(pool.map(lambda path: c.get(path, headers=email).status_code, ["/me", "/opportunities", "/notifications", "/me/alerts"] * 4))
+    assert set(codes) == {200}
+
+
+
+def test_second_year_cse_is_student_sees_junior_drives():
+    run()
+    with TestClient(app) as c:
+        c.put("/me", json={**PROFILE, "regNo": "24BCI0181", "branch": "CSE-IS", "batch": 2028, "cgpa": 9.0})
+        ops = c.get("/opportunities").json()
+        assert by_prefix(ops, "lumen-robotics")["eligibility"]["state"] == "eligible"
+        assert by_prefix(ops, "vit-e-cell")["eligibility"]["state"] == "eligible"
+        assert by_prefix(ops, "nimbus-labs-software")["eligibility"]["reasons"] == ["Batch 2028 is not eligible (open to 2026)"]

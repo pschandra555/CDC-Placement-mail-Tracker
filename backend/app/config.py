@@ -36,6 +36,26 @@ class Settings(BaseSettings):
 
     cron_secret: str = ""
 
+    # Phase 2: notifications. Each channel is off until configured; the in-app bell always works.
+    public_site_url: str = "http://localhost:3000"  # links inside Telegram / email messages
+    public_api_url: str = "http://localhost:8000"  # calendar feed links
+    telegram_bot_token: str = ""
+    telegram_bot_username: str = ""  # without @, used for the t.me/<bot>?start=<code> link
+    telegram_webhook_secret: str = ""
+    smtp_host: str = ""
+    smtp_port: int = 587
+    smtp_user: str = ""
+    smtp_password: str = ""
+    email_from: str = ""
+
+    @property
+    def telegram_enabled(self) -> bool:
+        return bool(self.telegram_bot_token and self.telegram_bot_username)
+
+    @property
+    def email_enabled(self) -> bool:
+        return bool(self.smtp_host and self.email_from)
+
     @property
     def dev_auth(self) -> bool:
         return not (self.supabase_url or self.supabase_jwt_secret)

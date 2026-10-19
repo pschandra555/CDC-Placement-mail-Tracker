@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .config import get_settings
 from .db import init_db
-from .routers import applications, cron, me, opportunities
+from .routers import alerts, applications, cron, me, opportunities
 
 
 @asynccontextmanager
@@ -23,7 +23,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-for r in (opportunities.router, me.router, applications.router, cron.router):
+for r in (opportunities.router, me.router, applications.router, alerts.router, cron.router):
     app.include_router(r)
 
 
@@ -36,5 +36,7 @@ def health():
             "inbox": "gmail" if s.gmail_enabled else "sample-mails",
             "extractor": "gemini" if s.gemini_api_key else ("groq" if s.groq_api_key else "rules"),
             "database": s.database_url.split(":", 1)[0],
+            "telegram": "on" if s.telegram_enabled else "off",
+            "email": "on" if s.email_enabled else "off",
         },
     }

@@ -48,15 +48,35 @@ def match_opportunity(db: Session, o: Opportunity, *, notify_new: bool = True) -
         schedule_reminders(db, s, o, res.state, notify_new=notify_new)
 
 
-def match_student(db: Session, s: Student) -> None:
+def match_student(db: Session, s: Student, *, notify_new: bool = False) -> None:
+    """Recompute eligibility for every drive. notify_new=True on a student's first profile save,
+    so they hear about drives that were already open before they joined."""
     now = utcnow()
     for o in db.scalars(select(Opportunity)):
         res = _store_result(db, s, o)
         if o.deadline is None or o.deadline > now:
-            schedule_reminders(db, s, o, res.state, notify_new=False)
+            schedule_reminders(db, s, o, res.state, notify_new=notify_new)
 
 
 def cancel_reminders(db: Session, student_id: str, opportunity_id: str) -> None:
     for r in db.scalars(select(Reminder).where(Reminder.student_id == student_id, Reminder.opportunity_id == opportunity_id,
                                                Reminder.sent.is_(False), Reminder.kind != "custom")):
         r.cancelled = True
+
+
+def queue_now(db: Session, student_id: str, opportunity_id: str, kind: str) -> None:
+    """Queue an immediate alert (shortlist, drive update); the dispatcher sends it on its next run."""
+    s = db.get(Student, student_id)
+    channel = "telegram" if s and s.telegram_chat_id else "email"
+    db.add(Reminder(student_id=student_id, opportunity_id=opportunity_id, kind=kind, remind_at=utcnow(), channel=channel))
+
+
+def notify_followers(db: Session, o: Opportunity) -> None:
+    """After an update mail: tell students who could still act on this drive or already applied."""
+    for res in db.scalars(select(EligibilityResult).where(EligibilityResult.opportunity_id == o.id)):
+        s = db.get(Student, res.student_id)
+        app = db.get(Application, (res.student_id, o.id))
+        following = app is not None and app.status not in ("skipped", "rejected")
+        could_apply = res.state in ("eligible", "open", "check") and o.category in (s.alert_categories or [])
+        if following or could_apply:
+            queue_now(db, res.student_id, o.id, "update")

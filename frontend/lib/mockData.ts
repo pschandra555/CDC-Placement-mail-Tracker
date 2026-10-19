@@ -41,7 +41,7 @@ export const DEFAULT_STUDENT: Student = {
 };
 
 const CDC = "helpdesk.cdc@vit.ac.in";
-const CSE_FAMILY = ["CSE", "CSE-AI", "CSE-DS", "CSE-IoT", "IT"];
+const CSE_FAMILY = ["CSE", "CSE-AI", "CSE-DS", "CSE-IoT", "CSE-IS", "CSE-BC", "CSE-BS", "IT"];
 const CIRCUIT = [...CSE_FAMILY, "ECE", "EEE"];
 
 function mail(subject: string, hoursAgo: number, body: string) {
@@ -395,6 +395,53 @@ export function getOpportunities(): Opportunity[] {
       status: "open",
       mail: mail("PixelForge — Frontend Internship (Remote)", 9, "Students of any branch (2026/2027 batch) with CGPA 6.0+."),
       logoHue: 300,
+    },
+    {
+      id: "lumen-summer",
+      category: "internship",
+      title: "Robotics Software Intern",
+      organization: "Lumen Robotics",
+      registrationLink: "https://example.com/register/lumen",
+      deadline: at(90),
+      summary: ["8-week summer research internship, ₹40k/month.", "Work on ROS-based robot navigation.", "For 2027 and 2028 batches, CSE & allied, CGPA 8.0+."],
+      details: { Role: "Robotics Software Intern", Stipend: "₹40,000 / month", Duration: "8 weeks", Type: "Summer 2026", PPO: "No" },
+      rule: { minCgpa: 8, branches: CSE_FAMILY, batches: [2027, 2028], sourceLine: "Open to 2027 and 2028 batch CSE & allied branches, CGPA 8.0 and above." },
+      confidence: 0.95,
+      status: "open",
+      mail: mail("Lumen Robotics — Summer Research Internship 2026 (2nd & 3rd years)", 4, "Open to 2027 and 2028 batch CSE & allied branches, CGPA 8.0 and above.\nStipend ₹40,000 per month."),
+      logoHue: 160,
+    },
+    {
+      id: "sparklab-ideathon",
+      category: "hackathon",
+      title: "SparkLab Ideathon 2026",
+      organization: "VIT E-Cell × SparkLab",
+      registrationLink: "https://example.com/register/sparklab",
+      deadline: at(100),
+      eventDate: day(10, 10),
+      summary: ["Pitch a fix for a real campus problem, teams of 2–3.", "₹75,000 prizes + incubation interviews.", "Open to 2nd and 3rd years, all branches."],
+      details: { Organizer: "VIT E-Cell × SparkLab", Theme: "Campus problems, real fixes", "Team size": "2–3", Prizes: "₹75,000 + incubation", Mode: "Online round, offline finale" },
+      rule: { batches: [2027, 2028], sourceLine: "Open to 2nd and 3rd year students (2027 and 2028 batches) of all branches." },
+      confidence: 0.94,
+      status: "open",
+      mail: mail("SparkLab Ideathon 2026 — Campus edition", 7, "Open to 2nd and 3rd year students (2027 and 2028 batches) of all branches."),
+      logoHue: 45,
+    },
+    {
+      id: "git-workshop",
+      category: "workshop",
+      title: "Git & Open Source for Beginners",
+      organization: "CDC, VIT",
+      registrationLink: "https://example.com/register/git-workshop",
+      deadline: at(30),
+      eventDate: day(2, 16),
+      summary: ["Hands-on Git and GitHub session.", "Make your first open-source contribution.", "Optional, open to all."],
+      details: { Topic: "Git, GitHub and open source", Venue: "TT Gallery 2", Attendance: "Optional" },
+      rule: null,
+      confidence: 0.97,
+      status: "open",
+      mail: mail("CDC VIT — Workshop: Git & Open Source for Beginners", 9, "Open to all students."),
+      logoHue: 210,
     },
   ];
 }

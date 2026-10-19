@@ -84,8 +84,8 @@ Return ONLY a JSON object with these keys:
   workshop: Topic, Venue, Attendance
   update: Linked drive, Round, Next step
 - eligibility: null if the mail states no criteria at all; otherwise an object with
-  min_cgpa (number|null), branches (list using CSE, CSE-AI, CSE-DS, CSE-IoT, IT, ECE, EEE, MECH, CIVIL, CHEM, BIOTECH;
-  "CSE & allied" means CSE, CSE-AI, CSE-DS, CSE-IoT, IT; empty list = all branches),
+  min_cgpa (number|null), branches (list using CSE, CSE-AI, CSE-DS, CSE-IoT, CSE-IS, CSE-BC, CSE-BS, IT, ECE, EEE, EIE, MECH, CIVIL, CHEM, BIOTECH;
+  "CSE & allied" means CSE, CSE-AI, CSE-DS, CSE-IoT, CSE-IS, CSE-BC, CSE-BS, IT; empty list = all branches),
   batches (graduation years, e.g. [2026]), max_backlogs (current backlogs allowed, number|null),
   no_past_backlogs (bool), min_10th, min_12th (percent|null),
   source_line (the eligibility sentence copied exactly from the mail),
@@ -151,7 +151,7 @@ def extract_groq(s: Settings, prompt: str) -> Extraction:
 
 # ── Rule-based extractor ──────────────────────────────────────────────────────
 
-CSE_FAMILY = ["CSE", "CSE-AI", "CSE-DS", "CSE-IoT", "IT"]
+CSE_FAMILY = ["CSE", "CSE-AI", "CSE-DS", "CSE-IoT", "CSE-IS", "CSE-BC", "CSE-BS", "IT"]
 BRANCH_WORDS = [
     (r"\bCSE\b(?!\s*(?:&|and)\s*allied)", "CSE"),
     (r"\bIT\b", "IT"),

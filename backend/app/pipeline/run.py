@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 
 from ..config import Settings, get_settings
 from ..db import SessionLocal, init_db
-from ..matching import DONE_STATUSES, cancel_reminders, match_opportunity
+from ..matching import DONE_STATUSES, cancel_reminders, match_opportunity, notify_followers, queue_now
 from ..models import Application, EligibilityRule, Mail, Opportunity, Student, utcnow
 from .clean import clean
 from .extract import Extraction, extract, parse_dt
@@ -99,6 +99,7 @@ def _shortlist(db: Session, ex: Extraction, regs: list[str]) -> int:
         else:
             continue
         cancel_reminders(db, s.id, drive.id)
+        queue_now(db, s.id, drive.id, "shortlist")
         n += 1
     return n
 
@@ -120,7 +121,10 @@ def apply_past_shortlists(db: Session, student: Student) -> int:
                 elif app.status in ("not-applied", "applied"):
                     app.status = "shortlisted"
                     n += 1
+                else:
+                    continue
                 cancel_reminders(db, student.id, drive.id)
+                queue_now(db, student.id, drive.id, "shortlist")
     return n
 
 
@@ -148,6 +152,7 @@ def process_mail(db: Session, raw: RawMail, s: Settings, report: RunReport) -> N
         _apply_update(db, target, ex)
         db.flush()
         match_opportunity(db, target, notify_new=False)
+        notify_followers(db, target)
         report.updated.append(target.id)
     elif ex.category == "other" and not (ex.deadline or ex.registration_link):
         report.ignored += 1  # not an opportunity (e.g. an admin notice)

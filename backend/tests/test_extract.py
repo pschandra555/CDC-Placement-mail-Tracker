@@ -19,7 +19,7 @@ def test_full_time_fields_and_rule():
     assert e.details["CTC"] == "₹24 LPA"
     assert e.registration_link == "https://example.com/register/nimbus"
     assert e.eligibility.min_cgpa == 8.0 and e.eligibility.max_backlogs == 0 and e.eligibility.batches == [2026]
-    assert e.eligibility.branches == ["CSE", "CSE-AI", "CSE-DS", "CSE-IoT", "IT"]
+    assert e.eligibility.branches == ["CSE", "CSE-AI", "CSE-DS", "CSE-IoT", "CSE-IS", "CSE-BC", "CSE-BS", "IT"]
 
 
 def test_categories():
@@ -64,3 +64,12 @@ def test_validation_flags_bad_values():
     e.registration_link = "not a link"
     e, problems = validate(e, MAILS["sample-nimbus"].received_at, 0.7)
     assert e.eligibility.unclear and e.registration_link == "" and len(problems) == 2
+
+
+def test_junior_drives():
+    lumen = ex("sample-lumen-summer").eligibility
+    assert (lumen.min_cgpa, lumen.batches) == (8.0, [2027, 2028]) and "CSE-IS" in lumen.branches
+    idea = ex("sample-campus-ideathon")
+    assert idea.category == "hackathon" and idea.eligibility.batches == [2027, 2028] and idea.eligibility.branches == []
+    work = ex("sample-git-workshop")
+    assert (work.category, work.organization, work.eligibility) == ("workshop", "CDC VIT", None)

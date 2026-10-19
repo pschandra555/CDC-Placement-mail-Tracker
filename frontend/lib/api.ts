@@ -42,6 +42,37 @@ export interface ApiStudent extends Student {
   profileComplete: boolean;
 }
 
+export interface AlertSettings {
+  notifyTelegram: boolean;
+  notifyEmail: boolean;
+  digestEnabled: boolean;
+  digestTime: string;
+  telegramLinked: boolean;
+  telegramAvailable: boolean;
+  emailAvailable: boolean;
+  calendarUrl: string;
+}
+
+export interface AppNotification {
+  id: string;
+  opportunityId: string | null;
+  kind: string;
+  title: string;
+  body: string;
+  channels: string[];
+  createdAt: string;
+  read: boolean;
+}
+
+export interface ReminderRow {
+  id: string;
+  opportunityId: string;
+  kind: "deadline-24h" | "deadline-2h" | "custom";
+  remindAt: string;
+  sent: boolean;
+  cancelled: boolean;
+}
+
 export const api = {
   me: () => call<ApiStudent>("/me"),
   saveMe: (s: Student) => call<ApiStudent>("/me", { method: "PUT", body: JSON.stringify(s) }),
@@ -50,4 +81,16 @@ export const api = {
   setApplication: (id: string, body: { status?: AppStatus; note?: string }) =>
     call<Application>(`/applications/${encodeURIComponent(id)}`, { method: "PUT", body: JSON.stringify(body) }),
   report: (id: string) => call<void>(`/opportunities/${encodeURIComponent(id)}/report`, { method: "POST" }),
+  alerts: () => call<AlertSettings>("/me/alerts"),
+  saveAlerts: (body: Partial<Pick<AlertSettings, "notifyTelegram" | "notifyEmail" | "digestEnabled" | "digestTime">>) =>
+    call<AlertSettings>("/me/alerts", { method: "PUT", body: JSON.stringify(body) }),
+  rotateCalendar: () => call<AlertSettings>("/me/calendar/rotate", { method: "POST" }),
+  telegramLink: () => call<{ url: string }>("/telegram/link", { method: "POST" }),
+  telegramUnlink: () => call<void>("/telegram/link", { method: "DELETE" }),
+  notifications: () => call<AppNotification[]>("/notifications"),
+  markRead: () => call<void>("/notifications/read", { method: "POST" }),
+  reminders: (opportunityId: string) => call<ReminderRow[]>(`/reminders?opportunityId=${encodeURIComponent(opportunityId)}`),
+  addReminder: (opportunityId: string, remindAt: string) =>
+    call<ReminderRow>("/reminders", { method: "POST", body: JSON.stringify({ opportunityId, remindAt }) }),
+  deleteReminder: (id: string) => call<void>(`/reminders/${encodeURIComponent(id)}`, { method: "DELETE" }),
 };
