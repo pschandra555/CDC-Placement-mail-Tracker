@@ -11,6 +11,9 @@ class Settings(BaseSettings):
 
     database_url: str = "sqlite:///./dev.db"
     cors_origins: str = "http://localhost:3000"
+    # Any localhost port is fine for local dev (Next.js moves to 3001, 3002... when 3000 is busy).
+    # Set to an empty string in production.
+    cors_origin_regex: str = r"http://(localhost|127\.0\.0\.1):\d+"
     allowed_email_domain: str = "vitstudent.ac.in"
 
     # Auth (Supabase). With neither set, dev mode trusts the X-Dev-Email header.
